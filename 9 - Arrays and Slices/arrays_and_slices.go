@@ -32,4 +32,26 @@ func main() {
 
 	array2[1] = "Index1Change"
 	fmt.Println(slice2) // [Index1Change index2]
+
+	// Internal Arrays
+	fmt.Println("---------------Internal Arrays---------------")
+	slice3 := make([]float32, 10, 11)
+	fmt.Println(slice3) // [0 0 0 0 0 0 0 0 0 0]
+	// length
+	fmt.Println(len(slice3)) // 10
+	// capacity
+	fmt.Println(cap(slice3)) // 11
+
+	slice3 = append(slice3, 5)
+	slice3 = append(slice3, 5)
+
+	fmt.Println(slice3)      // [0 0 0 0 0 0 0 0 0 0 5 5]
+	fmt.Println(len(slice3)) // 12
+	fmt.Println(cap(slice3)) // 24
+
+	slice4 := make([]float32, 5)
+	fmt.Println(slice4) // [0 0 0 0 0]
+	slice4 = append(slice4, 10)
+	fmt.Println(len(slice4)) // 6
+	fmt.Println(cap(slice4)) // 12
 }
