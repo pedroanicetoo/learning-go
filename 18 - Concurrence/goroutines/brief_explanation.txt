@@ -1,0 +1,14 @@
+// Concurrence != Parallel computing
+/*
+	`Parallel computing is a type of computation in which many calculations or processes are carried out simultaneously.
+	Large problems can often be divided into smaller ones, which can then be solved at the same time.`
+
+	`Parallel computing is closely related to concurrent computing—they are frequently used together, and often conflated,
+	though the two are distinct: it is possible to have parallelism without concurrency,
+	and concurrency without parallelism (such as multitasking by time-sharing on a single-core CPU).
+	In parallel computing, a computational task is typically broken down into several, often many,
+	very similar sub-tasks that can be processed independently and whose results are combined afterwards, upon completion.
+	In contrast, in concurrent computing, the various processes often do not address related tasks;
+	when they do, as is typical in distributed computing, the separate tasks may have a varied nature and often
+	require some inter-process communication during execution.`
+*/
