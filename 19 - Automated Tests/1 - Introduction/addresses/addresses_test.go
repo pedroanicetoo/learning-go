@@ -9,8 +9,8 @@ package addresses_test
 // go tool cover --html=coverage.txt (shows a html file with each line covered and not covered by test)
 
 import (
+	. "introduction-tests/addresses" // use this notation (.) for auto function reference of this package, its kind of alias.
 	"testing"
-	. "tests-introduction/addresses" // use this notation (.) for auto function reference of this package, its kind of alias.
 )
 
 type testScenario struct {
