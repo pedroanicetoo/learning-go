@@ -60,3 +60,37 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(fmt.Sprintf("User inserted with success! Id: %d", insertID)))
 }
+
+// SearchUser get a specific user from database
+func SearchUser(w http.ResponseWriter, r *http.Request) {
+	db, erro_r := database.Connect()
+	if erro_r != nil {
+		w.Write([]byte("Error to connect to database"))
+		return
+	}
+	defer db.Close()
+
+	lines, erro_r := db.Query("select * from users")
+	if erro_r != nil {
+		w.Write([]byte("Error on select users"))
+		return
+	}
+	defer lines.Close()
+
+	var users []user
+
+	for lines.Next() {
+		var user user
+
+		if erro_r := lines.Scan(&user.ID, &user.Name, &user.Email); erro_r != nil {
+			w.Write([]byte("Error on user scan"))
+			return
+		}
+		users = append(users, user)
+	}
+	w.WriteHeader(http.StatusOK)
+	if erro_r := json.NewEncoder(w).Encode(users); erro_r != nil {
+		w.Write([]byte("Error on convert users to JSON"))
+		return
+	}
+}
