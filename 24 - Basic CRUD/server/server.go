@@ -132,5 +132,47 @@ func SearchUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error on convert user to JSON"))
 		return
 	}
+}
 
+// UpdateUser updates the data from specific user
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	ID, erro_r := strconv.ParseUint(params["id"], 10, 32)
+	if erro_r != nil {
+		w.Write([]byte("Error on convert param to integer"))
+		return
+	}
+
+	requestBody, erro_r := ioutil.ReadAll(r.Body)
+	if erro_r != nil {
+		w.Write([]byte("Error to read request body"))
+		return
+	}
+
+	var user user
+	if erro_r := json.Unmarshal(requestBody, &user); erro_r != nil {
+		w.Write([]byte("Error to convert the user to struct"))
+		return
+	}
+
+	db, erro_r := database.Connect()
+	if erro_r != nil {
+		w.Write([]byte("Error to connect to database"))
+		return
+	}
+	defer db.Close()
+
+	statement, erro_r := db.Prepare("update users set name = ?, email = ? where id = ?")
+	if erro_r != nil {
+		w.Write([]byte("Error to create statement"))
+		return
+	}
+	defer statement.Close()
+
+	if _, erro_r := statement.Exec(user.Name, user.Email, ID); erro_r != nil {
+		w.Write([]byte("error to update user"))
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
