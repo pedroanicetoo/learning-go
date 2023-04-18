@@ -15,6 +15,7 @@ func main() {
 	router.HandleFunc("/users", server.SearchUsers).Methods(http.MethodGet)
 	router.HandleFunc("/users/{id}", server.SearchUser).Methods(http.MethodGet)
 	router.HandleFunc("/users/{id}", server.UpdateUser).Methods(http.MethodPut)
+	router.HandleFunc("/users/{id}", server.DeleteUser).Methods(http.MethodDelete)
 
 	fmt.Println("Listen on port 5000...")
 	log.Fatal(http.ListenAndServe(":5000", router))
