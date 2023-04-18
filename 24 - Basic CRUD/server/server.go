@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"crud/database"
+
+	"github.com/gorilla/mux"
 )
 
 type user struct {
@@ -61,8 +64,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprintf("User inserted with success! Id: %d", insertID)))
 }
 
-// SearchUser get a specific user from database
-func SearchUser(w http.ResponseWriter, r *http.Request) {
+// SearchUsers get a specific user from database
+func SearchUsers(w http.ResponseWriter, r *http.Request) {
 	db, erro_r := database.Connect()
 	if erro_r != nil {
 		w.Write([]byte("Error to connect to database"))
@@ -93,4 +96,41 @@ func SearchUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error on convert users to JSON"))
 		return
 	}
+}
+
+// SearchUser get a specific user from database
+func SearchUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	ID, erro_r := strconv.ParseUint(params["id"], 10, 32)
+	if erro_r != nil {
+		w.Write([]byte("Error on convert param to integer"))
+		return
+	}
+
+	db, erro_r := database.Connect()
+	if erro_r != nil {
+		w.Write([]byte("Error to connect to database"))
+		return
+	}
+
+	line, erro_r := db.Query("select * from users where id = ?", ID)
+	if erro_r != nil {
+		w.Write([]byte("Error on select user"))
+		return
+	}
+
+	var user user
+	if line.Next() {
+		if erro_r := line.Scan(&user.ID, &user.Name, &user.Email); erro_r != nil {
+			w.Write([]byte("Error on user scan"))
+			return
+		}
+	}
+
+	if erro_r := json.NewEncoder(w).Encode(user); erro_r != nil {
+		w.Write([]byte("Error on convert user to JSON"))
+		return
+	}
+
 }
